@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+/// movies sample array of object
+
 const tempMovieData = [
   {
     imdbID: "tt1375666",
@@ -47,10 +49,16 @@ const tempWatchedData = [
   },
 ];
 
+//// calculating average
+
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
+//// Main component
+
 export default function App() {
+  //// states used in the component
+
   const [movies, setMovies] = useState(tempMovieData);
   const [watched, setWatched] = useState(tempWatchedData);
 
@@ -62,6 +70,8 @@ export default function App() {
         <NumResults movies={movies} />
       </NavBar>
       <Main>
+        {/* using reusable component and component composite to pass props deep in the component */}
+
         <Box>
           <MovieList movies={movies} />
         </Box>
@@ -74,9 +84,13 @@ export default function App() {
   );
 }
 
+/// navigation bar component
+
 function NavBar({ children }) {
   return <nav className="nav-bar">{children}</nav>;
 }
+
+/// logo component
 
 function Logo() {
   return (
@@ -86,6 +100,8 @@ function Logo() {
     </div>
   );
 }
+
+/// search bar component
 
 function SearchBar() {
   const [query, setQuery] = useState("");
@@ -101,6 +117,8 @@ function SearchBar() {
   );
 }
 
+/// results of movies component
+
 function NumResults({ movies }) {
   return (
     <p className="num-results">
@@ -109,9 +127,13 @@ function NumResults({ movies }) {
   );
 }
 
+/// main element component
+
 function Main({ children }) {
   return <main className="main">{children}</main>;
 }
+
+/// reusable box component
 
 function Box({ children }) {
   const [isOpen, setIsOpen1] = useState(true);
@@ -150,6 +172,8 @@ function Box({ children }) {
 //   );
 // }
 
+/// lists of movies we show in UI component
+
 function MovieList({ movies }) {
   return (
     <ul className="list">
@@ -159,6 +183,8 @@ function MovieList({ movies }) {
     </ul>
   );
 }
+
+/// movies we show in the movies list component
 
 function Movie({ movie }) {
   return (
@@ -174,6 +200,8 @@ function Movie({ movie }) {
     </li>
   );
 }
+
+/// watched summary data component
 
 function WatchedSummary({ watched }) {
   const avgImdbRating = average(watched.map((movie) => movie.imdbRating));
@@ -204,6 +232,8 @@ function WatchedSummary({ watched }) {
   );
 }
 
+/// watched movies list component
+
 function WatchedList({ watched }) {
   return (
     <ul className="list">
@@ -213,6 +243,8 @@ function WatchedList({ watched }) {
     </ul>
   );
 }
+
+/// watched movies we show in watched movie list component
 
 function WatchedMovie({ movie }) {
   return (
