@@ -60,7 +60,7 @@ const KEY = "a33c6ae";
 
 export default function App() {
   //// states used in the component
-  const [query, setQuery] = useState("inception");
+  const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -68,7 +68,6 @@ export default function App() {
   const [selectedID, setSelectedID] = useState(null);
 
   function handleSelectedMovie(id) {
-    console.log(id);
     setSelectedID((selected) => (id === selected ? null : id));
   }
 
@@ -105,8 +104,8 @@ export default function App() {
         } catch (err) {
           if (err.name !== "AbortError") {
             setError(err.message);
+            console.error(err.message);
           }
-          console.error(err.message);
         } finally {
           setIsLoading(false);
         }
@@ -117,6 +116,7 @@ export default function App() {
         setError("");
         return;
       }
+      handleCloseMovie();
       fetchMovies();
       return function () {
         controller.abort();
@@ -279,7 +279,6 @@ function MovieList({ movies, onSelectedMovie }) {
 /// movies we show in the movies list component
 
 function Movie({ movie, onSelectedMovie }) {
-  // console.log(movie.imdbID);
   return (
     <li onClick={() => onSelectedMovie(movie.imdbID)}>
       <img src={movie.Poster} alt={`${movie.Title} poster`} />
@@ -326,8 +325,17 @@ function MovieDetails({ selectedID, onCloseMovie, onAddWatched, watched }) {
     onCloseMovie();
   }
 
+  useEffect(function () {
+    function callBack(e) {
+      if (e.code === "Escape") onCloseMovie();
+    }
+    document.addEventListener("keydown", callBack);
+    return function () {
+      document.removeEventListener("keydown", callBack);
+    };
+  });
+
   const isWatched = watched.map((watch) => watch.imdbID).includes(selectedID);
-  console.log(isWatched);
 
   useEffect(
     function () {
@@ -339,7 +347,6 @@ function MovieDetails({ selectedID, onCloseMovie, onAddWatched, watched }) {
         const data = await res.json();
         setMovie(data);
         setIsLoading(false);
-        // console.log(data);
       }
       getMovieDetails();
     },
